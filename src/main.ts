@@ -7,7 +7,6 @@ const loginService = new LoginService();
 const loginState = loginService.isLoggedIn();
 
 if (loginState) {
-  // Render Dashboard
   new Dashboard(loginService)
 } else {
     loginService.renderLoginComponent();

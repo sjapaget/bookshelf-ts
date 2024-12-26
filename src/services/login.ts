@@ -6,8 +6,8 @@ import {
 } from '../types/index';
 
 import DataStore from './storage';
-
 import loginComponent from '../components/login/login';
+import UserInstance from '../models/User';
 
 export default class LoginService implements ILoginService {
     LOGIN_KEY = 'bookshelf-ts-login';
@@ -36,6 +36,18 @@ export default class LoginService implements ILoginService {
     logout(): void {
         localStorage.removeItem(this.LOGIN_KEY);
         window.location.href = '/';
+    }
+
+    register(username: string): void {
+        const allUsers: User[] = this.dataStore.getItem(Updatable.USERS);
+        if (allUsers.find(user => user.username === username)) {
+            alert('Username already exists. Please choose a different one.');
+            throw new Error('Username already exists');
+        }
+        const newUser: User = new UserInstance(username);
+        this.dataStore.setItem(Updatable.USERS, newUser);
+        this.login(username);
+        this.successfulLogin();
     }
 
     isLoggedIn(): boolean {

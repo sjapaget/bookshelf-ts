@@ -37,7 +37,7 @@ export type User = {
 	id: string,
 	username: string,
 	bookShelves: () => BookShelf[],
-	readings: Reading[]
+	readings: () => Reading[]
 }
 
 // Data Storage Types
@@ -77,6 +77,7 @@ export interface Storage {
 export interface ILoginService {
     login(username: string): void;
     logout(): void;
+    register(username: string): void;
     isLoggedIn(): boolean;
 }
 
