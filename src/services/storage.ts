@@ -16,6 +16,8 @@ export default class LocalStorageService implements Storage {
         [Updatable.AUTHORS]: 'authors'
     };
 
+    STORAGE_KEY = 'bookshelf-ts';
+
     setItem(key: Updatable, value: HasId): void {
         const dataStore = this.getDataStore();
         
@@ -32,7 +34,7 @@ export default class LocalStorageService implements Storage {
         this._updateOrAddItem(collection, value as any);
     
         // save the updated dataStore
-        localStorage.setItem('bookshelf-ts', JSON.stringify(dataStore));
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(dataStore));
     }
 
     _updateOrAddItem<T extends HasId>(collection: T[], item: T): T[] {
@@ -80,12 +82,12 @@ export default class LocalStorageService implements Storage {
             collection.splice(index, 1);
         }
         // save the updated dataStore
-        localStorage.setItem('bookshelf-ts', JSON.stringify(dataStore));
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(dataStore));
     }
 
     getDataStore(): DataStore {
 
-        let dataStoreString: string | null = localStorage.getItem('bookshelf-ts');
+        let dataStoreString: string | null = localStorage.getItem(this.STORAGE_KEY);
 
         if (!dataStoreString) {
             this._initializeDataStore();
@@ -103,6 +105,6 @@ export default class LocalStorageService implements Storage {
             authors: []
         };
 
-        localStorage.setItem('bookshelf-ts', JSON.stringify(initialDataStore));
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(initialDataStore));
     }
 }
