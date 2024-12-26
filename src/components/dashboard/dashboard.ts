@@ -19,6 +19,11 @@ export default class Dashboard {
         }
 
         this.renderNavbar(container);
+        const appContainer: HTMLDivElement|null = document.querySelector('#app');
+        if (!appContainer) {
+            throw new Error('App container element not found');
+        }
+        this.renderDashboardContent(appContainer);
     }
 
     renderNavbar(container: HTMLDivElement): void {
