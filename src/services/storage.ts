@@ -13,7 +13,7 @@ export default class LocalStorageService implements Storage {
         [Updatable.BOOKS]: 'books',
         [Updatable.BOOK_SHELVES]: 'bookShelves',
         [Updatable.READINGS]: 'readings',
-        [Updatable.AUTHORS]: 'authors'
+        [Updatable.AUTHORS]: 'authors',
     };
 
     STORAGE_KEY = 'bookshelf-ts';

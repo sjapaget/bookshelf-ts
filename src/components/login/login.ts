@@ -1,6 +1,8 @@
+import LoginService from "../../services/login";
 
 
 export default function loginComponent(): void {
+
     const container = document.querySelector('#app');
     if (!container) {
         throw new Error('Container element not found');
@@ -8,6 +10,8 @@ export default function loginComponent(): void {
 
     container.innerHTML = `
     <form
+        action="#"
+        id="login-form"
         class="max-w-md mx-auto"
     >
         <input 
@@ -26,16 +30,29 @@ export default function loginComponent(): void {
         
     </form>`;
 
-    const usernameInput = document.getElementById('username');
-    const loginButton = document.getElementById('login-btn');
-
-    if (!usernameInput ||!loginButton) {
-        throw new Error('Input or button element not found');
+    
+    const form = document.querySelector('#login-form');
+    
+    if (!form) {
+        throw new Error('Login form element not found');
     }
+    
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const usernameInput = form.querySelector('#username') as HTMLInputElement;
 
-    loginButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        
+        if (!usernameInput) {
+            throw new Error('Username input element not found');
+        }
+
+        const username = usernameInput.value.trim();
+
+        if (!username) {
+            alert('Username is required');
+            return;
+        }
+        // TODO: Perform login logic here
+        const loginService = new LoginService();
+        loginService.login(username);
     });
-
 }

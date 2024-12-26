@@ -1,4 +1,4 @@
-
+// Data models
 export type Author = {
 	id: string,
 	name: string
@@ -62,7 +62,7 @@ export enum Updatable {
     BOOKS = 'books',
     BOOK_SHELVES = 'bookShelves',
     READINGS ='readings',
-    AUTHORS = 'authors'
+    AUTHORS = 'authors',
 }
 
 export interface Storage {
@@ -70,4 +70,17 @@ export interface Storage {
     getItem(key: Updatable): any;
     removeItem(key: Updatable, id: string): void;
     getDataStore(): DataStore;
+}
+
+// Login Service Types
+
+export interface ILoginService {
+    login(username: string): void;
+    // logout(): void;
+    // isLoggedIn(): boolean;
+}
+
+export type LoginState = {
+    loggedIn: boolean,
+    user: User | null
 }
