@@ -1,10 +1,15 @@
 import './style.css'
-// import {
-//     Updatable,
-//     User,
-// } from './types/index';
-// import LocalStorageService from './services/storage';
-import loginComponent from './components/login/login';
 
-loginComponent();
+import LoginService from './services/login';
+import Dashboard from './components/dashboard/dashboard';
+
+const loginService = new LoginService();
+const loginState = loginService.isLoggedIn();
+
+if (loginState) {
+  // Render Dashboard
+  new Dashboard(loginService)
+} else {
+    loginService.renderLoginComponent();
+}
 

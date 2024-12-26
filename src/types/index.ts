@@ -76,8 +76,8 @@ export interface Storage {
 
 export interface ILoginService {
     login(username: string): void;
-    // logout(): void;
-    // isLoggedIn(): boolean;
+    logout(): void;
+    isLoggedIn(): boolean;
 }
 
 export type LoginState = {

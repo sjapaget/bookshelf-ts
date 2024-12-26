@@ -1,7 +1,7 @@
 import LoginService from "../../services/login";
 
 
-export default function loginComponent(): void {
+export default function loginComponent(loginService: LoginService): void {
 
     const container = document.querySelector('#app');
     if (!container) {
@@ -51,8 +51,12 @@ export default function loginComponent(): void {
             alert('Username is required');
             return;
         }
-        // TODO: Perform login logic here
-        const loginService = new LoginService();
-        loginService.login(username);
+
+        if (loginService.login(username)) {
+            form.remove();
+            loginService.successfulLogin();
+        } else {
+            alert('Failed to login. Please try again');
+        }
     });
 }
