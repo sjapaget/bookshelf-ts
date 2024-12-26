@@ -62,4 +62,8 @@ export default class LoginService implements ILoginService {
         window.location.href = '/'; // redirect to home page after successful login
     }
 
+    currentUser(): User | null {
+        const loginData: LoginState = JSON.parse(localStorage.getItem(this.LOGIN_KEY) || '{}');
+        return loginData.user;
+    }
 }
