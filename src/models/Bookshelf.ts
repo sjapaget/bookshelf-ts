@@ -1,6 +1,5 @@
 import {
     BookShelf
-    // Book
 } from "../types";
 
 export default class BookShelfInstance implements BookShelf {

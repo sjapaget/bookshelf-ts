@@ -1,10 +1,12 @@
 
 import LoginService from '../../services/login';
 import BookshelfService from '../../services/bookshelf';
+import BookService from '../../services/book';
 
 
 export default class Dashboard {
     bookshelfService: BookshelfService;
+    bookService: BookService;
 
     constructor(private loginService: LoginService) {
         if (!this.loginService.isLoggedIn()) {
@@ -12,6 +14,7 @@ export default class Dashboard {
         }
         this.loginService = loginService;
         this.bookshelfService = new BookshelfService();
+        this.bookService = new BookService();
         this.render();
     }
 
@@ -178,20 +181,24 @@ export default class Dashboard {
                 id="book-shelves-container"
                 class="toggleable"
             >
-                <h2 class="text-2xl font-bold">Book Shelves</h2>
-                <div class="flex gap-4">
-                    <button
-                        id="add-book-shelf-btn"
-                        class="bg-green-500 p-2 rounded-md text-black-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
-                    >
-                        Add New Book Shelf
-                        </button>
+                <div
+                    class="flex gap-4"
+                >
+                    <h2 class="text-2xl font-bold">Book Shelves</h2>
+                    <div class="flex gap-4">
+                        <button
+                            id="add-book-shelf-btn"
+                            class="bg-green-500 p-2 rounded-md text-black-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
+                        >
+                            Add New Book Shelf
+                            </button>
+                    </div>
                 </div>
-                    <ul 
-                        id="book-shelves-list"
-                        class="list-disc"
-                    >
-                    </ul>
+                <ul 
+                    id="book-shelves-list"
+                    class="list-disc"
+                >
+                </ul>
             </div>
         `;
 
@@ -240,7 +247,7 @@ export default class Dashboard {
         container.replaceChildren(bookShelvesContainer);
     }
 
-    renderBooks(container: HTMLDivElement|null): void {
+    renderBooks(container: Element|null): void {
         if (!container) {
             throw new Error('Container element not found');
         }
@@ -258,20 +265,23 @@ export default class Dashboard {
                 id="books-container"
                 class="toggleable"
             >
-                <h2 class="text-2xl font-bold">Books</h2>
-                <div class="flex gap-4">
-                    <button
-                        id="add-book-btn"
-                        class="bg-green-500 p-2 rounded-md text-black-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
-                    >
-                        Add New Book
-                        </button>
+                <div
+                    class="flex gap-4"
+                >
+                    <h2 class="text-2xl font-bold">Books</h2>
+                    <div class="flex gap-4">
+                        <button
+                            id="add-book-btn"
+                            class="bg-green-500 p-2 rounded-md text-black-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
+                        >
+                            Add New Book
+                            </button>
+                    </div>
                 </div>
                 <ul 
                     id="books-list"
                     class="list-disc"
                 >
-                    <li>Book one</li>
                 </ul>
             </div>
             `;
@@ -281,7 +291,7 @@ export default class Dashboard {
             throw new Error('Add book button element not found');
         }
         addBookBtn.addEventListener('click', () => {
-            // Add logic to create a new book
+            this.renderAddBookForm(booksContainer);
         });
 
         container.replaceChildren(booksContainer);
@@ -384,5 +394,90 @@ export default class Dashboard {
         });
 
         container.replaceChildren(addBookshelfFormContainer);
+    }
+
+    renderAddBookForm(container: Element|null): void {
+        if (!container) {
+            throw new Error('Container element not found');
+        }
+
+        let addBookFormContainer = container.querySelector('#add-book-form-container');
+
+        if (!addBookFormContainer) {
+            addBookFormContainer = document.createElement('div');
+        }
+        addBookFormContainer.innerHTML = `
+            <div
+                id="add-book-form-container"
+                class="toggleable"
+            >
+                <h2 class="text-2xl font-bold">Add New Book</h2>
+                <form id="add-book-form">
+                    <div class="m-4">
+                        <label for="book-title">Title:</label>
+                        <input class="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" id="book-title" name="book-title" required>
+                    </div>
+                    <div class="m-4">
+                        <label for="book-author">Author:</label>
+                        <select id="book-author" name="book-author" required>
+                            <option value="">Select an author</option>
+                            <option value="1">Author one</option>
+                        </select>
+                    </div>
+                    <div class="m-4">
+                        <label for="book-numPages">Number of Pages:</label>
+                        <input class="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="number" id="book-numPages" name="book-numPages" required>
+                    </div>
+                    <div class="m-4">
+                        <label for="book-publishedYear">Published Year:</label>
+                        <input class="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="number" id="book-publishedYear" name="book-publishedYear" required>
+                    </div>
+                    <button type="submit" class="bg-green-500 p-2 rounded-md text-white-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                        Add Book
+                    </button>
+                </form>
+                </div>
+                `;
+
+        const addBookForm = addBookFormContainer.querySelector('#add-book-form');
+        if (!addBookForm) {
+            throw new Error('Add book form element not found');
+        }
+
+        // add author options to the select
+        // const authors = this.authorService.getAllAuthors();
+        // authors.forEach((author: Author[]) => {
+        //     const authorOption = document.createElement('option');
+        //     authorOption.value = author.id;
+        //     authorOption.textContent = author.name;
+        //     addBookForm.querySelector('#book-author').appendChild(authorOption);
+        // });
+
+        addBookForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const bookTitleInput: HTMLInputElement|null = addBookForm.querySelector('#book-title');
+            const bookAuthorSelect: HTMLSelectElement|null = addBookForm.querySelector('#book-author');
+            const bookNumPagesInput: HTMLInputElement|null = addBookForm.querySelector('#book-numPages');
+            const bookPublishedYearInput: HTMLInputElement|null = addBookForm.querySelector('#book-publishedYear');
+
+            if (!bookTitleInput ||!bookAuthorSelect || !bookNumPagesInput || !bookPublishedYearInput) {
+                throw new Error('Book form input elements not found');
+            }
+            const bookTitle = bookTitleInput.value;
+            const authorId = bookAuthorSelect.value;
+            const numPages = bookNumPagesInput.value;
+            const publishedYear = bookPublishedYearInput.value;
+            
+            // Add logic to create a new book
+            this.bookService.addBook(
+                bookTitle,
+                parseInt(authorId),
+                parseInt(numPages),
+                parseInt(publishedYear)
+            );
+
+            this.renderBooks(container);
+        });
+        container.replaceChildren(addBookFormContainer);
     }
 }
