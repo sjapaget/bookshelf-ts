@@ -1,13 +1,17 @@
 
 import LoginService from '../../services/login';
+import BookshelfService from '../../services/bookshelf';
+
 
 export default class Dashboard {
+    bookshelfService: BookshelfService;
 
     constructor(private loginService: LoginService) {
         if (!this.loginService.isLoggedIn()) {
             throw new Error('User not logged in');
         }
         this.loginService = loginService;
+        this.bookshelfService = new BookshelfService();
         this.render();
     }
 
@@ -170,8 +174,6 @@ export default class Dashboard {
             bookShelvesContainer = document.createElement('div');
         }
 
-        // retrieve all this users bookshelves and generate HTML for them.
-
         bookShelvesContainer.innerHTML = `
             <div
                 id="book-shelves-container"
@@ -190,10 +192,18 @@ export default class Dashboard {
                         id="book-shelves-list"
                         class="list-disc"
                     >
-                        <li>Book one</li>
                     </ul>
             </div>
         `;
+
+        const bookShelvesList = bookShelvesContainer.querySelector('#book-shelves-list');
+        if (!bookShelvesList) {
+            throw new Error('Book shelves list element not found');
+        }
+
+        this.bookshelfService.getAllBookshelves().forEach((bookShelf) => {
+            bookShelvesList.innerHTML += `<li>${bookShelf.name}</li>`;
+        });
 
         const addBookshelfBtn = bookShelvesContainer.querySelector('#add-book-shelf-btn')
         if (!addBookshelfBtn) {
@@ -201,9 +211,8 @@ export default class Dashboard {
         }
 
         addBookshelfBtn.addEventListener('click', () => {
-            // Add logic to create a new book shelf
+            this.renderAddBookshelfForm(bookShelvesContainer);
         });
-
 
         container.replaceChildren(bookShelvesContainer);
     }
@@ -299,5 +308,58 @@ export default class Dashboard {
         });
 
         container.replaceChildren(authorsContainer);
+    }
+
+    renderAddBookshelfForm(container: HTMLDivElement): void {
+        if (!container) {
+            throw new Error('Container element not found');
+        }
+
+        let addBookshelfFormContainer = container.querySelector('#add-bookshelf-form-container');
+
+        if (!addBookshelfFormContainer) {
+            addBookshelfFormContainer = document.createElement('div');
+        }
+        addBookshelfFormContainer.innerHTML = `
+            <div
+                id="add-bookshelf-form-container"
+                class="toggleable"
+            >
+                <h2 class="text-2xl font-bold">Add New Book Shelf</h2>
+                <form id="add-bookshelf-form">
+                    <div class="m-4">
+                        <label for="bookshelf-name">Name:</label>
+                        <input class="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" id="bookshelf-name" name="bookshelf-name" required>
+                    </div>
+                    <button type="submit" class="bg-green-500 p-2 rounded-md text-white-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                        Add Book Shelf
+                    </button>
+                </form>
+            </div>
+            `;
+
+        const addBookshelfForm = addBookshelfFormContainer.querySelector('#add-bookshelf-form');
+        if (!addBookshelfForm) {
+            throw new Error('Add bookshelf form element not found');
+        }
+        addBookshelfForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const bookshelfNameInput: HTMLInputElement|null = addBookshelfForm.querySelector('#bookshelf-name');
+
+            if (!bookshelfNameInput) {
+                throw new Error('Bookshelf name input element not found');
+            }
+
+            const bookshelfName = bookshelfNameInput.value;
+
+            this.bookshelfService.addBookShelf(
+                bookshelfName,
+                this.loginService.currentUser()?.id as string
+            );
+
+            this.renderBookshelves(container);
+        });
+
+        container.replaceChildren(addBookshelfFormContainer);
     }
 }

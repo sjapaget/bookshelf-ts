@@ -16,7 +16,6 @@ export type BookShelf = {
     id: string,
     user_id: string,
     name: string,
-    books: Book[]
 };
 
 export enum ReadingStatus {
@@ -41,11 +40,9 @@ export type User = {
 }
 
 // Data Storage Types
-
 export interface HasId {
     id: string
 }
-
 
 export type DataStore = {
     users: User[],
