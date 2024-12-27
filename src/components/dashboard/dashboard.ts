@@ -162,8 +162,7 @@ export default class Dashboard {
         container.replaceChildren(dashboardContainer);
     }
     
-
-    renderBookshelves(container: HTMLDivElement): void {
+    renderBookshelves(container: Element|null): void {
         if (!container) {
             throw new Error('Container element not found');
         }
@@ -202,22 +201,46 @@ export default class Dashboard {
         }
 
         this.bookshelfService.getAllBookshelves().forEach((bookShelf) => {
-            bookShelvesList.innerHTML += `<li>${bookShelf.name}</li>`;
+            bookShelvesList.innerHTML += `
+                <li
+                    class="flex gap-4 m-4 justify-between hover:border-gray-200 p-4 rounded-md hover:shadow-lg"
+                >
+                    <span class="text-gray-600">    
+                        ${bookShelf.name}
+                    </span>
+                    <button
+                        id="delete-book-shelf-btn-${bookShelf.id}"
+                        class="delete-book-shelf-btn bg-red-500 p-2 rounded-md text-white hover:text-black-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
+                    >
+                        Delete
+                    </button>
+                </li>
+            `;
         });
 
         const addBookshelfBtn = bookShelvesContainer.querySelector('#add-book-shelf-btn')
         if (!addBookshelfBtn) {
             throw new Error('Add book shelf button element not found');
         }
-
         addBookshelfBtn.addEventListener('click', () => {
             this.renderAddBookshelfForm(bookShelvesContainer);
+        });
+
+        const deleteBookShelfBtns = bookShelvesList.querySelectorAll('.delete-book-shelf-btn');
+    
+        deleteBookShelfBtns.forEach((deleteBtn) => {
+            deleteBtn.addEventListener('click', () => {
+                console.log('Deleting book shelf:', deleteBtn.id);
+                const bookShelfId = deleteBtn.id.replace('delete-book-shelf-btn-', '');
+                this.bookshelfService.removeBookShelf(bookShelfId);
+                this.renderBookshelves(container);
+            });
         });
 
         container.replaceChildren(bookShelvesContainer);
     }
 
-    renderBooks(container: HTMLDivElement): void {
+    renderBooks(container: HTMLDivElement|null): void {
         if (!container) {
             throw new Error('Container element not found');
         }
@@ -264,7 +287,7 @@ export default class Dashboard {
         container.replaceChildren(booksContainer);
     }
 
-    renderAuthors(container: HTMLDivElement): void {
+    renderAuthors(container: HTMLDivElement|null): void {
         if (!container) {
             throw new Error('Container element not found');
         }
@@ -310,7 +333,7 @@ export default class Dashboard {
         container.replaceChildren(authorsContainer);
     }
 
-    renderAddBookshelfForm(container: HTMLDivElement): void {
+    renderAddBookshelfForm(container: Element|null): void {
         if (!container) {
             throw new Error('Container element not found');
         }

@@ -29,4 +29,8 @@ export default class BookshelfService {
         this.dataStore.setItem(Updatable.BOOK_SHELVES, newBookShelf);
         return newBookShelf;
     }
+
+    removeBookShelf(id: string): void {
+        this.dataStore.removeItem(Updatable.BOOK_SHELVES, id);
+    }
 }
