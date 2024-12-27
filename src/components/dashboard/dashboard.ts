@@ -237,7 +237,6 @@ export default class Dashboard {
     
         deleteBookShelfBtns.forEach((deleteBtn) => {
             deleteBtn.addEventListener('click', () => {
-                console.log('Deleting book shelf:', deleteBtn.id);
                 const bookShelfId = deleteBtn.id.replace('delete-book-shelf-btn-', '');
                 this.bookshelfService.removeBookShelf(bookShelfId);
                 this.renderBookshelves(container);
@@ -257,8 +256,6 @@ export default class Dashboard {
         if (!booksContainer) {
             booksContainer = document.createElement('div');
         }
-
-        // retrieve all this users books and generate HTML for them.
 
         booksContainer.innerHTML = `
             <div
@@ -284,7 +281,7 @@ export default class Dashboard {
                 >
                 </ul>
             </div>
-            `;
+        `;
 
         const addBookBtn = booksContainer.querySelector('#add-book-btn')
         if (!addBookBtn) {
@@ -292,6 +289,38 @@ export default class Dashboard {
         }
         addBookBtn.addEventListener('click', () => {
             this.renderAddBookForm(booksContainer);
+        });
+
+        const booksList = booksContainer.querySelector('#books-list');
+        if (!booksList) {
+            throw Error('Books list element not found');
+        }
+
+        this.bookService.getAllBooks().forEach((book) => {
+            booksList.innerHTML += `
+                <li
+                    class="flex justify-between gap-4 m-4 hover:border-gray-200 p-4 rounded-md hover:shadow-lg"
+                >
+                    <span class="text-gray-600">    
+                        ${book.title}
+                    </span>
+                    <button
+                        id="delete-book-btn-${book.id}"
+                        class="delete-book-btn bg-red-500 p-2 rounded-md text-white hover:text-black-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
+                    >
+                        Delete
+                    </button>
+                </li>
+            `;
+        });
+
+        const deleteBookBtns = booksList.querySelectorAll('.delete-book-btn');
+        deleteBookBtns.forEach((deleteBtn) => {
+            deleteBtn.addEventListener('click', () => {
+                const bookId = deleteBtn.id.replace('delete-book-btn-', '');
+                this.bookService.removeBook(bookId);
+                this.renderBooks(container);
+            });
         });
 
         container.replaceChildren(booksContainer);

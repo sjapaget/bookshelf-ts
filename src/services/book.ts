@@ -22,4 +22,7 @@ export default class BookService {
         return newBook;
     }
     
+    removeBook(id: string): void {
+        this.dataStore.removeItem(Updatable.BOOKS, id);
+    }
 }
