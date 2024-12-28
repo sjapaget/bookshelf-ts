@@ -5,13 +5,13 @@ import {
 export default class BookInstance implements Book {
     id: string;
     title: string;
-    authorId: number
+    authorId: string;
     numPages: number;
     publishedYear: number;
 
     constructor(
         title: string,
-        authorId: number,
+        authorId: string,
         numPages: number,
         publishedYear: number,
     ) {
@@ -21,5 +21,4 @@ export default class BookInstance implements Book {
         this.numPages = numPages;
         this.publishedYear = publishedYear;
     }
-
 }

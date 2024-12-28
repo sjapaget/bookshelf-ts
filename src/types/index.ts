@@ -7,7 +7,7 @@ export type Author = {
 export type Book = {
     id: string
     title: string,
-    authorId: number,
+    authorId: string,
     numPages: number,
     publishedYear: number
 };

@@ -6,7 +6,6 @@ import BookshelfService from '../../services/bookshelf';
 import BookService from '../../services/book';
 import AuthorService from '../../services/author';
 
-
 export default class Dashboard {
     bookshelfService: BookshelfService;
     bookService: BookService;
@@ -307,7 +306,8 @@ export default class Dashboard {
                     class="flex justify-between gap-4 m-4 hover:border-gray-200 p-4 rounded-md hover:shadow-lg"
                 >
                     <span class="text-gray-600">    
-                        ${book.title}
+                        ${book.title},
+                        ${this.authorService.getAuthorById(book.authorId)?.name}
                     </span>
                     <button
                         id="delete-book-btn-${book.id}"
@@ -542,7 +542,7 @@ export default class Dashboard {
             // Add logic to create a new book
             this.bookService.addBook(
                 bookTitle,
-                parseInt(authorId),
+                authorId,
                 parseInt(numPages),
                 parseInt(publishedYear)
             );

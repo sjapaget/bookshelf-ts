@@ -16,6 +16,11 @@ export default class AuthorService {
         return this.dataStore.getItem(Updatable.AUTHORS);
     }
 
+    getAuthorById(id: string): Author | undefined {
+        const author = this.dataStore.getItem(Updatable.AUTHORS, id);
+        return author;
+    }
+
     addAuthor(name: string): Author {
         const newAuthor = new AuthorInstance(name);
         this.dataStore.setItem(Updatable.AUTHORS, newAuthor);

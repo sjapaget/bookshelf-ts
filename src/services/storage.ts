@@ -58,7 +58,7 @@ export default class LocalStorageService implements Storage {
             return dataStore[storeKey];
         }
 
-        return dataStore[storeKey].find(item => item.id === id);
+        return dataStore[storeKey].find(item => item.id === id.toString());
     }
 
     removeItem(key: Updatable, id: string): void {
