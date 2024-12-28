@@ -1,0 +1,67 @@
+{
+    "bookshelf-ts-login": {
+        "loggedIn": true,
+        "user": {
+            "id": "1735411831416",
+            "username": "Sam"
+        }
+    },
+    "bookshelf-ts": {
+        "users": [
+            {
+                "id": "1735411831416",
+                "username": "Sam"
+            }
+        ],
+        "books": [
+            {
+                "id": "1735414820977",
+                "title": "The Waves",
+                "authorId": 1735413701269,
+                "numPages": 324,
+                "publishedYear": 1931
+            },
+            {
+                "id": "1735414834589",
+                "title": "Le Baron Perché",
+                "authorId": 1735414801500,
+                "numPages": 394,
+                "publishedYear": 1957
+            }
+        ],
+        "bookShelves": [
+            {
+                "id": "1735412072747",
+                "user_id": "1735411831416",
+                "name": "To Read"
+            },
+            {
+                "id": "1735412181498",
+                "user_id": "1735411831416",
+                "name": "Read"
+            },
+            {
+                "id": "1735412408672",
+                "user_id": "1735411831416",
+                "name": "Owned"
+            },
+            {
+                "id": "1735412646592",
+                "user_id": "1735411831416",
+                "name": "Loaned"
+            }
+        ],
+        "readings": [],
+        "authors": [
+            {
+                "id": "1735413701269",
+                "name": "Virginia Woolf"
+            },
+            {
+                "id": "1735414801500",
+                "name": "Italo Calvino"
+            }
+        ]
+    }
+}
+
