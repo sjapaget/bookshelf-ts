@@ -1,3 +1,5 @@
+import { Author } from '../../types/index';
+
 
 import LoginService from '../../services/login';
 import BookshelfService from '../../services/bookshelf';
@@ -487,7 +489,6 @@ export default class Dashboard {
                         <label for="book-author">Author:</label>
                         <select id="book-author" name="book-author" required>
                             <option value="">Select an author</option>
-                            <option value="1">Author one</option>
                         </select>
                     </div>
                     <div class="m-4">
@@ -511,13 +512,17 @@ export default class Dashboard {
         }
 
         // add author options to the select
-        // const authors = this.authorService.getAllAuthors();
-        // authors.forEach((author: Author[]) => {
-        //     const authorOption = document.createElement('option');
-        //     authorOption.value = author.id;
-        //     authorOption.textContent = author.name;
-        //     addBookForm.querySelector('#book-author').appendChild(authorOption);
-        // });
+        const authors = this.authorService.getAllAuthors();
+        authors.forEach((author: Author) => {
+            const authorOption = document.createElement('option');
+            authorOption.value = author.id;
+            authorOption.textContent = author.name;
+            const authorSelect = addBookForm.querySelector('#book-author');
+            if (!authorSelect) {
+                throw new Error('Author select element not found');
+            }
+            authorSelect.appendChild(authorOption);
+        });
 
         addBookForm.addEventListener('submit', (event) => {
             event.preventDefault();
