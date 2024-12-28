@@ -2,11 +2,13 @@
 import LoginService from '../../services/login';
 import BookshelfService from '../../services/bookshelf';
 import BookService from '../../services/book';
+import AuthorService from '../../services/author';
 
 
 export default class Dashboard {
     bookshelfService: BookshelfService;
     bookService: BookService;
+    authorService: AuthorService;
 
     constructor(private loginService: LoginService) {
         if (!this.loginService.isLoggedIn()) {
@@ -15,6 +17,7 @@ export default class Dashboard {
         this.loginService = loginService;
         this.bookshelfService = new BookshelfService();
         this.bookService = new BookService();
+        this.authorService = new AuthorService();
         this.render();
     }
 
@@ -326,7 +329,7 @@ export default class Dashboard {
         container.replaceChildren(booksContainer);
     }
 
-    renderAuthors(container: HTMLDivElement|null): void {
+    renderAuthors(container: Element|null): void {
         if (!container) {
             throw new Error('Container element not found');
         }
@@ -343,30 +346,64 @@ export default class Dashboard {
                 id="authors-container"
                 class="toggleable"
             >
-                <h2 class="text-2xl font-bold">Authors</h2>
                 <div class="flex gap-4">
-                    <button
-                        id="add-author-btn"
-                        class="bg-green-500 p-2 rounded-md text-black-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
-                    >
-                        Add New Author
+                    <h2 class="text-2xl font-bold">Authors</h2>
+                    <div class="flex gap-4">
+                        <button
+                            id="add-author-btn"
+                            class="bg-green-500 p-2 rounded-md text-black-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
+                        >
+                            Add New Author
                         </button>
+                    </div>
                 </div>
                 <ul 
                     id="authors-list"
                     class="list-disc"
                 >
-                    <li>Author one</li>
                 </ul>
             </div>
-            `;
+        `;
 
         const addAuthorBtn = authorsContainer.querySelector('#add-author-btn')
         if (!addAuthorBtn) {
             throw new Error('Add author button element not found');
         }
         addAuthorBtn.addEventListener('click', () => {
-            // Add logic to create a new author
+            this.renderAddAuthorForm(authorsContainer);
+        });
+
+        const authorsList = authorsContainer.querySelector('#authors-list');
+        if (!authorsList) {
+            throw Error('Authors list element not found');
+        }
+        
+        this.authorService.getAllAuthors().forEach((author) => {
+            authorsList.innerHTML += `
+                <li
+                    class="flex justify-between gap-4 m-4 hover:border-gray-200 p-4 rounded-md hover:shadow-lg"
+                >
+                    <span class="text-gray-600">    
+                        ${author.name}
+                    </span>
+                    <button
+                        id="delete-author-btn-${author.id}"
+                        class="delete-author-btn bg-red-500 p-2 rounded-md text-white hover:text-black-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
+                    >
+                        Delete
+                    </button>
+                </li>
+            `;
+        });
+
+        const deleteAuthorBtns = authorsList.querySelectorAll('.delete-author-btn');
+
+        deleteAuthorBtns.forEach((deleteBtn) => {
+            deleteBtn.addEventListener('click', () => {
+                const authorId = deleteBtn.id.replace('delete-author-btn-', '');
+                this.authorService.removeAuthor(authorId);
+                this.renderAuthors(container);
+            })
         });
 
         container.replaceChildren(authorsContainer);
@@ -508,5 +545,49 @@ export default class Dashboard {
             this.renderBooks(container);
         });
         container.replaceChildren(addBookFormContainer);
+    }
+
+    renderAddAuthorForm(container: Element|null): void {
+    if (!container) {
+            throw new Error('Container element not found');
+        }
+        let addAuthorFormContainer = container.querySelector('#add-author-form-container');
+        if (!addAuthorFormContainer) {
+            addAuthorFormContainer = document.createElement('div');
+        }
+        addAuthorFormContainer.innerHTML = `
+            <div
+                id="add-author-form-container"
+                class="toggleable"
+            >
+                <h2 class="text-2xl font-bold">Add New Author</h2>
+                <form id="add-author-form">
+                    <div class="m-4">
+                        <label for="author-name">Name:</label>
+                        <input class="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" id="author-name" name="author-name" required>
+                    </div>
+                    <button type="submit" class="bg-green-500 p-2 rounded-md text-white-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                        Add Author
+                    </button>
+                </form>
+            </div>
+        `;
+
+        const addAuthorForm = addAuthorFormContainer.querySelector('#add-author-form');
+        if (!addAuthorForm) {
+            throw new Error('Add author form element not found');
+        }
+        addAuthorForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const authorNameInput: HTMLInputElement|null = addAuthorForm.querySelector('#author-name');
+        if (!authorNameInput) {
+            throw new Error('Author name input element not found');
+        }
+        const authorName = authorNameInput.value;
+        // Add logic to create a new author
+        this.authorService.addAuthor(authorName);
+        this.renderAuthors(container);
+        });
+        container.replaceChildren(addAuthorFormContainer);
     }
 }

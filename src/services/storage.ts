@@ -20,7 +20,6 @@ export default class LocalStorageService implements Storage {
 
     setItem(key: Updatable, value: HasId): void {
         const dataStore = this.getDataStore();
-        
         if (!dataStore) {
             throw new Error('Data store not initialized');
         }
@@ -30,10 +29,7 @@ export default class LocalStorageService implements Storage {
             throw new Error('Unsupported key');
         }
     
-        const collection = dataStore[storeKey];
-        this._updateOrAddItem(collection, value as any);
-    
-        // save the updated dataStore
+        dataStore[storeKey] = this._updateOrAddItem(dataStore[storeKey], value as any);
         localStorage.setItem(this.STORAGE_KEY, JSON.stringify(dataStore));
     }
 

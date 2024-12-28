@@ -1,6 +1,6 @@
 import {
     Book,
-} from "../types";
+} from "../types/index";
 
 export default class BookInstance implements Book {
     id: string;
